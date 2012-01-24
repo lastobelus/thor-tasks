@@ -1,0 +1,3 @@
+describe <%= config[:project].camelize %>::<%= config[:name].camelize %> do
+  it "should be tested"
+end

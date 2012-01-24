@@ -1,0 +1,5 @@
+module <%= config[:project].camelize %>
+  class <%= config[:name].camelize %>
+
+  end
+end
