@@ -3,13 +3,10 @@ require File.join(File.dirname(__FILE__), '../spec_helper')
 describe 'thor rspec' do
   
   context 'libclass' do
-    before :all do
-      clean
-      setup_existing_project_in_sandbox
-    end
-   
     context "foo (class with no namespace)" do
-      before(:each) do
+      before(:all) do
+        clean
+        setup_existing_project_in_sandbox
         thor('rspec libclass foo')
       end
       
@@ -44,8 +41,21 @@ describe 'thor rspec' do
     end
 
     context "baz:qux (class with relative namespace)" do
-      before(:each) do
+      before(:all) do
+        clean
+        setup_existing_project_in_sandbox
         thor('rspec libclass baz:qux')
+      end
+      
+      context "module file" do
+        subject {'lib/sandbox/baz.rb'}      
+        specify { file( subject ).should exist }
+        
+        it "should include the class file" do
+          file( subject ).contents.should match %r{
+            require\ "baz/qux"
+          }x
+        end
       end
       
       context "class file" do
@@ -86,10 +96,23 @@ describe 'thor rspec' do
     end
 
     context ":corge:grault:garply (class with absolute namespace)" do
-      before(:each) do
+      before(:all) do
+        clean
+        setup_existing_project_in_sandbox
         thor('rspec libclass /corge/grault/garply')
       end
       
+      context "module file" do
+        subject {'lib/corge.rb'}      
+        specify { file( subject ).should exist }
+        
+        it "should include the class file" do
+          file( subject ).contents.should match %r{
+            require\ "corge/grault/garply"
+          }x
+        end
+      end
+
       context "class file" do
         let(:namespace_dir) { 'lib/corge/grault' }
         let(:class_file) { "#{namespace_dir}/garply.rb" }

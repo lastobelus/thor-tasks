@@ -1,7 +1,6 @@
 <% class_indent = 0 -%>
 <% config[:namespace].each_with_index do |level, ix| -%>
 <% class_indent = ix -%>
-<% puts "level: #{level.inspect} ix: #{ix}" -%>
 <%= "  " * ix %>module <%= level.camelize %>
 <% end -%>
 <%= "  " * class_indent %>  class <%= config[:name].camelize %>
