@@ -23,26 +23,31 @@ class Rspec < Thor
     desc 'libclass NAME', 'Generate a new class file with a matching spec'
     def libclass(name)
       
-=begin
-      puts
-      puts "libclass called #{name} #{options.inspect}"
-      puts "Rspec.source_root: #{Rspec.source_root.inspect}"
-      puts "`ls #{Rspec.source_root}`: #{`ls #{Rspec.source_root}`.inspect}"
-      puts
-=end
+      namespace = name.split(/[\/:]+/)
+      name = namespace.pop
 
-      empty_directory("spec")
-      empty_directory("spec/#{@project}")
-      
+      if namespace.length > 0 && (namespace.first == "")
+        namespace.shift
+      else
+        namespace.unshift Rspec.project
+      end
+
+      namespace_path = namespace.join('/')
+
       opts = {
-        :name    => name, 
-        :project => Rspec.project
+        :name           => name, 
+        :namespace      => namespace,
+        :module_name    => namespace_path.camelize
       }
 
+      empty_directory("spec")
+      empty_directory("spec/#{@namespace_path}")
+      empty_directory("lib/#{@namespace_path}")
+      
       template("templates/libclass/class.rb.tt",
-        "lib/#{opts[:project]}/#{name}.rb", opts)
+        "lib/#{namespace_path}/#{name}.rb", opts)
       template("templates/libclass/spec.rb.tt",
-        "spec/#{opts[:project]}/#{name}_spec.rb", opts)
+        "spec/#{namespace_path}/#{name}_spec.rb", opts)
       
       
     end

@@ -1,5 +1,12 @@
-module <%= config[:project].camelize %>
-  class <%= config[:name].camelize %>
+<% class_indent = 0 -%>
+<% config[:namespace].each_with_index do |level, ix| -%>
+<% class_indent = ix -%>
+<% puts "level: #{level.inspect} ix: #{ix}" -%>
+<%= "  " * ix %>module <%= level.camelize %>
+<% end -%>
+<%= "  " * class_indent %>  class <%= config[:name].camelize %>
 
-  end
-end
+<%= "  " * class_indent %>  end
+<% class_indent.downto(0) do |ix| -%>
+<%= "  " * ix %>end
+<% end -%><% # put it here I get an extra newline. put it up after the end and I get NO newline between the ends -%>

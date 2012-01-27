@@ -42,6 +42,91 @@ describe 'thor rspec' do
         end
       end
     end
+
+    context "baz:qux (class with relative namespace)" do
+      before(:each) do
+        thor('rspec libclass baz:qux')
+      end
+      
+      context "class file" do
+        let(:namespace_dir) { 'lib/sandbox/baz' }
+        let(:class_file) { "#{namespace_dir}/qux.rb" }
+
+        specify { file( namespace_dir ).should exist }
+        specify { file( class_file ).should exist }
+        
+        it "should be a namespaced to the project" do
+          # we have to live with an extra newline on 
+          # the end because fuck you, ERB
+          file( class_file ).contents.should match %r{
+            module\ Sandbox\s+
+              module\ Baz\s+
+                class\ Qux\s+
+                .*
+                end\s+
+              end\s+
+            end\Z
+          }mx
+        end
+      end 
+      
+      context "spec file" do
+        let(:spec_file) { 'spec/sandbox/baz/qux_spec.rb' }
+
+        specify { file( spec_file ).should exist  }
+        
+        it "should be a namespaced to the project" do
+          file( spec_file ).contents.should match %r{
+            describe\ Sandbox::Baz::Qux\ do\s+
+              .*
+            end$
+          }mx
+        end
+      end
+    end
+
+    context ":corge:grault:garply (class with absolute namespace)" do
+      before(:each) do
+        thor('rspec libclass /corge/grault/garply')
+      end
+      
+      context "class file" do
+        let(:namespace_dir) { 'lib/corge/grault' }
+        let(:class_file) { "#{namespace_dir}/garply.rb" }
+
+        specify { file( namespace_dir ).should exist }
+        specify { file( class_file ).should exist }
+        
+        it "should be namespaced to the project" do
+          # we have to live with an extra newline on 
+          # the end because fuck you, ERB
+          file( class_file ).contents.should match %r{
+            module\ Corge\s+
+              module\ Grault\s+
+                class\ Garply\s+
+                .*
+                end\s+
+              end\s+
+            end\Z
+          }mx
+        end
+      end 
+      
+      context "spec file" do
+        let(:spec_file) { 'spec/corge/grault/garply_spec.rb' }
+
+        specify { file( spec_file ).should exist  }
+        
+        it "should be a namespaced to the project" do
+          file( spec_file ).contents.should match %r{
+            describe\ Corge::Grault::Garply\ do\s+
+              .*
+            end$
+          }mx
+        end
+      end
+    end
+
+    
   end
 end
-
