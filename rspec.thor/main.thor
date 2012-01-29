@@ -35,9 +35,9 @@ class Rspec < Thor
         module_name = namespace[0]
         module_path = ''
       else
+        namespace.unshift Rspec.project
         module_inc = namespace.join('/')
         name = namespace.pop
-        namespace.unshift Rspec.project
         module_name = namespace[1]
         module_path = namespace[0]
       end
@@ -46,9 +46,11 @@ class Rspec < Thor
       namespace_path = namespace.join('/')
 
       opts = {
-        :name           => name, 
-        :namespace      => namespace,
-        :module_name    => namespace_path.camelize
+        :name              => name,
+        :namespace         => namespace,
+        :namespace_path    => namespace_path,
+        :class_path       => module_inc,
+        :module_name       => namespace_path.camelize
       }
 
       empty_directory("spec")

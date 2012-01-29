@@ -53,7 +53,7 @@ describe 'thor rspec' do
         
         it "should include the class file" do
           file( subject ).contents.should match %r{
-            require\ "baz/qux"
+            require\ "sandbox/baz/qux"
           }x
         end
       end
@@ -87,6 +87,8 @@ describe 'thor rspec' do
         
         it "should be a namespaced to the project" do
           file( spec_file ).contents.should match %r{
+            require\ 'spec_helper'\s+
+            require\ 'sandbox/baz/qux'\s+
             describe\ Sandbox::Baz::Qux\ do\s+
               .*
             end$
@@ -142,6 +144,8 @@ describe 'thor rspec' do
         
         it "should be a namespaced to the project" do
           file( spec_file ).contents.should match %r{
+            require\ 'spec_helper'\s+
+            require\ 'corge/grault/garply'\s+
             describe\ Corge::Grault::Garply\ do\s+
               .*
             end$

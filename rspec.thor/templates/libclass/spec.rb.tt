@@ -1,3 +1,5 @@
+require 'spec_helper'
+require '<%= config[:class_path] %>'
 describe <%= config[:module_name] %>::<%= config[:name].camelize %> do
   it "should be tested"
 end
